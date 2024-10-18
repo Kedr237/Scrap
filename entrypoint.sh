@@ -8,4 +8,4 @@ cd src
 
 python manage.py migrate
 
-gunicorn settings.wsgi:application --bind 0.0.0.0:8000
+gunicorn settings.wsgi:application --bind 0.0.0.0:8000 -w 2

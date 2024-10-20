@@ -9,3 +9,6 @@ rm:
 
 logs:
 	docker compose -f docker-compose.yml logs
+
+logs app:
+	docker compose -f docker-compose.yml logs app

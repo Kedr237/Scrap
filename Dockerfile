@@ -1,7 +1,8 @@
 FROM python:3.11.9
 
 RUN apt-get update \
-    && apt-get install -y netcat-traditional
+    && apt-get install -y netcat-traditional \
+    && apt-get install -y cron
 
 WORKDIR /app
 

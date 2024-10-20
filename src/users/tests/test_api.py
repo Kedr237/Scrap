@@ -90,9 +90,7 @@ class TestJWTTokens(APITestCase):
 
         response = self.client.post(
             reverse(self.refresh_url),
-            data={
-                'refresh': response_token.data['refresh']
-            }
+            data={'refresh': response_token.data['refresh']}
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsNotNone(response.data['access'])
@@ -129,17 +127,33 @@ class TestJWTTokens(APITestCase):
 
         response_1 = self.client.post(
             reverse(self.refresh_url),
-            data={
-                'refresh': response_token.data['refresh']
-            }
+            data={'refresh': response_token.data['refresh']}
         )
         response_2 = self.client.post(
             reverse(self.refresh_url),
-            data={
-                'refresh': response_1.data['refresh']
-            }
+            data={'refresh': response_1.data['refresh']}
         )
         self.assertEqual(response_1.status_code, status.HTTP_200_OK)
         self.assertEqual(response_2.status_code, status.HTTP_200_OK)
         self.assertNotEqual(response_1.data['access'], response_2.data['access'])
         self.assertNotEqual(response_1.data['refresh'], response_2.data['refresh'])
+
+    def test_tokens_blacklist(self):
+        response_token = self.client.post(
+            reverse(self.obtain_url),
+            data={
+                'username': self.user_data['username'],
+                'password': self.user_data['password'],
+            }
+        )
+
+        response_1 = self.client.post(
+            reverse(self.refresh_url),
+            data={'refresh': response_token.data['refresh']}
+        )
+        response_2 = self.client.post(
+            reverse(self.refresh_url),
+            data={'refresh': response_token.data['refresh']}
+        )
+        self.assertEqual(response_1.status_code, status.HTTP_200_OK)
+        self.assertEqual(response_2.status_code, status.HTTP_401_UNAUTHORIZED)

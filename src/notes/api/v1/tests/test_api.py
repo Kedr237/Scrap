@@ -30,6 +30,7 @@ class TestNoteView(APITestCase):
             'title': 'Note test_post_note_auth',
             'content': 'Content',
         }
+
         response = self.client.post(reverse(self.url_list), data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -99,3 +100,25 @@ class TestNoteView(APITestCase):
 
         deleted_note = Note.objects.filter(id=note.id)
         self.assertFalse(deleted_note.exists())
+
+    def test_post_child_note(self):
+        self.authenticate()
+        parent_note = Note.objects.create(
+            owner=self.user,
+            title='Note test_post_child_note 1',
+            content='Content',
+        )
+        data = {
+            'title': 'Note test_post_child_note 2',
+            'content': 'Content',
+            'parent': parent_note.id,
+        }
+
+        response_post = self.client.post(reverse(self.url_list), data)
+        self.assertEqual(response_post.status_code, status.HTTP_201_CREATED)
+
+        url_detail = reverse(self.url_detail, args=[parent_note.id])
+        response_get = self.client.get(url_detail)
+        self.assertEqual(response_get.status_code, status.HTTP_200_OK)
+        self.assertEqual(response_get.data['id'], parent_note.id)
+        self.assertEqual(response_get.data['children'][0]['title'], data['title'])

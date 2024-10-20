@@ -10,5 +10,5 @@ rm:
 logs:
 	docker compose -f docker-compose.yml logs
 
-logs app:
+logs-app:
 	docker compose -f docker-compose.yml logs app

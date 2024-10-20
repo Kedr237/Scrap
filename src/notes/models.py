@@ -35,6 +35,14 @@ class Note(TimeMixin):
         blank=True,
         null=True,
     )
+    parent = models.ForeignKey(
+        verbose_name='Parent note',
+        to='self',
+        null=True,
+        blank=True,
+        related_name='children',
+        on_delete=models.CASCADE,
+    )
 
     def __str__(self):
         return f'{self.owner.username} | {self.title}'
